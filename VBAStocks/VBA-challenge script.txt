@@ -1,0 +1,101 @@
+Sub Tickers()
+
+Dim Opening As Double
+Dim Closing As Double
+Dim Volume As Long
+Dim Ticker As String
+Dim YearlyChange As Double
+Dim PercentChange As Double
+Dim StockVol As Double
+Dim Summary As Integer
+
+YearlyChange = 0
+PercentChange = 0
+StockVol = 0
+Summary = 2
+
+For i = 2 To Cells(Rows.Count, 1).End(xlUp).Row
+
+Opening = Cells(i, 3).Value
+Closing = Cells(i, 6).Value
+Volume = Cells(i, 7).Value
+    
+    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+    
+        Ticker = Cells(i, 1).Value
+        
+        Range("I1").Value = "Ticker"
+        Range("J1").Value = "Yearly Change"
+        Range("K1").Value = "Percent Change"
+        Range("L1").Value = "Total Stock Volume"
+        
+        Range("I1").Columns.AutoFit
+        Range("J1").Columns.AutoFit
+        Range("K1").Columns.AutoFit
+        Range("L1").Columns.AutoFit
+        
+        YearlyChange = YearlyChange + (Closing - Opening)
+        Range("I" & Summary).Value = Ticker
+        Range("J" & Summary).Value = YearlyChange
+        
+        If YearlyChange >= 0 Then
+            Range("J" & Summary).Interior.ColorIndex = 4
+        
+        ElseIf YearlyChange < 0 Then
+            Range("J" & Summary).Interior.ColorIndex = 3
+        
+        End If
+        
+        PercentChange = PercentChange + ((Closing - Opening) / Opening)
+        Range("K" & Summary).Value = PercentChange
+        Range("K" & Summary).NumberFormat = "0.00%"
+        
+        Range("O1").Value = "Ticker"
+        Range("P1").Value = "Value"
+        
+        If PercentChange = Application.Max(Range("K:K")) Then
+            Range("P2").Value = PercentChange
+            Range("P2").NumberFormat = "0.00%"
+            Range("N2").Value = "Greatest % Increase"
+            Range("O2").Value = Ticker
+            
+        ElseIf PercentChange = Application.Min(Range("K:K")) Then
+            Range("P3").Value = PercentChange
+            Range("P3").NumberFormat = "0.00%"
+            Range("N3").Value = "Greatest % Decrease"
+            Range("O3").Value = Ticker
+            
+        End If
+        
+        StockVol = StockVol + Volume
+        Range("L" & Summary).Value = StockVol
+        
+        If StockVol = Application.Max(Range("L:L")) Then
+            Range("P4").Value = PercentChange
+            Range("P4").NumberFormat = "0.00%"
+            Range("N4").Value = "Greatest Total Volume"
+            Range("O4").Value = Ticker
+        
+        End If
+        
+        Range("N1:P4").Columns.AutoFit
+
+        Summary = Summary + 1
+        
+        YearlyChange = 0
+        PercentChange = 0
+        StockVol = 0
+        
+    Else
+    
+        YearlyChange = YearlyChange + (Closing - Opening)
+        PercentChange = PercentChange + ((Closing - Opening) / Opening)
+        StockVol = StockVol + Volume
+            
+    End If
+    
+Next i
+     
+End Sub
+
+
